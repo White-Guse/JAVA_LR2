@@ -29,7 +29,12 @@ public class ShapeGroup extends Shape {
     @Override
     protected java.awt.Shape baseGeometry() {
         Area area = new Area();
-        for (Shape child : children) area.add(new Area(child.geometry()));
+        for (Shape child : children) {
+            java.awt.Shape contour = child.geometry();
+            if (child instanceof PencilStroke) contour = new java.awt.BasicStroke(child.getStyle().getThickness())
+                    .createStrokedShape(contour);
+            area.add(new Area(contour));
+        }
         return area;
     }
 
