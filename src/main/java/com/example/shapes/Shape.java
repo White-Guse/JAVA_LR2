@@ -56,7 +56,10 @@ public abstract class Shape implements Serializable {
 
     // Проверяет попадание мыши в фигуру или рядом с контуром.
     public boolean contains(double px, double py) {
-        return geometry().contains(px, py) || geometry().intersects(px - 4, py - 4, 8, 8);
+        java.awt.Shape contour = geometry();
+        return contour.contains(px, py) || new java.awt.BasicStroke(style.getThickness() + 8,
+                java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND)
+                .createStrokedShape(contour).contains(px, py);
     }
 
     // Возвращает цвет контура.
