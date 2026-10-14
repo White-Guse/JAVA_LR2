@@ -53,7 +53,7 @@ public class ShapeCanvas extends JPanel {
         graphics.setColor(new Color(20, 114, 128));
         graphics.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[]{5, 4}, 0));
         for (Shape shape : selection) {
-            if (!shape.isVisible()) continue;
+            if (!isDisplayed(shape, shapes)) continue;
             Rectangle2D bounds = shape.getBounds();
             graphics.draw(new Rectangle2D.Double(bounds.getX() - 5, bounds.getY() - 5,
                     Math.max(1, bounds.getWidth()) + 10, Math.max(1, bounds.getHeight()) + 10));
@@ -94,7 +94,8 @@ public class ShapeCanvas extends JPanel {
         java.awt.Shape contour = shape.geometry();
         if (style.hasShadow()) {
             g.setColor(new Color(30, 40, 40, 45));
-            java.awt.Shape shadow = AffineTransform.getTranslateInstance(7, 7).createTransformedShape(contour);
+            java.awt.Shape shadow = AffineTransform.getTranslateInstance(7, 7)
+                    .createTransformedShape(shape instanceof ShapeGroup ? visibleContour(shape) : contour);
             if (shape instanceof PencilStroke) {
                 g.setStroke(new BasicStroke(style.getThickness(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 g.draw(shadow);
@@ -118,6 +119,30 @@ public class ShapeCanvas extends JPanel {
             g.draw(contour);
         }
         drawText(g, shape);
+    }
+
+    // Собирает контуры только видимых элементов для тени группы.
+    private java.awt.Shape visibleContour(Shape shape) {
+        java.awt.geom.Area area = new java.awt.geom.Area();
+        if (!shape.isVisible()) return area;
+        if (shape instanceof ShapeGroup group) {
+            for (Shape child : group.getChildren()) area.add(new java.awt.geom.Area(visibleContour(child)));
+        } else {
+            java.awt.Shape contour = shape.geometry();
+            if (shape instanceof PencilStroke) contour = new BasicStroke(shape.getStyle().getThickness()).createStrokedShape(contour);
+            area.add(new java.awt.geom.Area(contour));
+        }
+        return area;
+    }
+
+    // Проверяет видимость выбранного элемента с учётом его родителей.
+    private boolean isDisplayed(Shape target, List<Shape> list) {
+        for (Shape shape : list) {
+            if (!shape.isVisible()) continue;
+            if (shape == target) return true;
+            if (shape instanceof ShapeGroup group && isDisplayed(target, group.getChildren())) return true;
+        }
+        return false;
     }
 
     // Подготавливает изображение заливки один раз для каждого оформления.

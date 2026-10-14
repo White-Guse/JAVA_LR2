@@ -233,7 +233,6 @@ public class EditorController extends MouseAdapter {
     private void showExample() {
         if (!canDiscard()) return;
         model.loadShapes(ExampleDrawing.create());
-        model.moveSelection(0, 0);
         currentFile = null;
         refresh();
     }

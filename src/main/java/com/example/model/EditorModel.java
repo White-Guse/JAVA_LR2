@@ -234,7 +234,7 @@ public class EditorModel {
     }
 
     // Очищает рисунок и выделение.
-    public void clear() { shapes.clear(); selection.clear(); modified = true; }
+    public void clear() { shapes.clear(); selection.clear(); nextNumber = 1; modified = true; }
 
     // Заменяет рисунок объектами из файла.
     public void loadShapes(List<Shape> saved) {
