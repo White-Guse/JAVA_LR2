@@ -125,8 +125,12 @@ public class EditorUiTest {
                 for (Component child : frame.getContentPane().getComponents()) {
                     if (child instanceof JTabbedPane tabs) tabs.setSelectedIndex(1);
                 }
-                BufferedImage image = new BufferedImage(frame.getContentPane().getWidth(), frame.getContentPane().getHeight(), BufferedImage.TYPE_INT_RGB);
+                int menuHeight = frame.getJMenuBar().getHeight();
+                BufferedImage image = new BufferedImage(frame.getContentPane().getWidth(),
+                        frame.getContentPane().getHeight() + menuHeight, BufferedImage.TYPE_INT_RGB);
                 Graphics2D graphics = image.createGraphics();
+                frame.getJMenuBar().printAll(graphics);
+                graphics.translate(0, menuHeight);
                 frame.getContentPane().printAll(graphics);
                 graphics.dispose();
                 Path path = Path.of("target", "editor-preview.png");
