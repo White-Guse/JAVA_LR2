@@ -12,16 +12,18 @@ public enum ShapeType {
 
     private final String title;
 
+    // Сохраняет название инструмента.
     ShapeType(String title) {
         this.title = title;
     }
 
+    // Возвращает название фигуры.
     public String getTitle() {
         return title;
     }
 
+    // Создаёт заготовку выбранной фигуры.
     public Shape createShape() {
-        // Центр задаётся относительно начала координат холста.
         return switch (this) {
             case CIRCLE -> new Circle(0, 0, 90, new Color(239, 68, 68));
             case ELLIPSE -> new Ellipse(0, 0, 140, 80, new Color(59, 130, 246));
