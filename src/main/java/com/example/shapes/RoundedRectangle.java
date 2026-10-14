@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.geom.RoundRectangle2D;
 
 public class RoundedRectangle extends Rectangle {
-    private final int arc; // ширина и высота дуги скругления
+    private static final long serialVersionUID = 1L;
+    private final int arc;
 
+    // Создаёт прямоугольник со скруглёнными углами.
     public RoundedRectangle(int x, int y, int width, int height, int arc, Color color) {
         super(x, y, width, height, color);
         if (arc < 0) {
@@ -14,8 +16,9 @@ public class RoundedRectangle extends Rectangle {
         this.arc = arc;
     }
 
+    // Возвращает контур со скруглением.
     @Override
-    public java.awt.Shape geometry() {
+    protected java.awt.Shape baseGeometry() {
         return new RoundRectangle2D.Double(x - width / 2.0, y - height / 2.0,
                 width, height, arc, arc);
     }
