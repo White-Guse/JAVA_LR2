@@ -82,6 +82,9 @@ public class ShapeFrame extends JFrame {
         addTool(toolRow, "marker", "Маркер");
         for (ShapeType type : ShapeType.values()) {
             JToggleButton button = new JToggleButton(type.getTitle());
+            button.setMargin(new Insets(4, 8, 4, 8));
+            Dimension size = button.getPreferredSize();
+            button.setPreferredSize(new Dimension(size.width + 16, size.height));
             toolGroup.add(button);
             tools.put(type, button);
             toolRow.add(button);
@@ -95,6 +98,7 @@ public class ShapeFrame extends JFrame {
     // Добавляет обычную кнопку команды.
     private void addButton(JPanel row, String key, String title) {
         JButton button = new JButton(title);
+        button.setMargin(new Insets(4, 8, 4, 8));
         button.setFocusPainted(false);
         actions.put(key, button);
         row.add(button);
@@ -103,6 +107,9 @@ public class ShapeFrame extends JFrame {
     // Добавляет переключатель режима работы мыши.
     private JToggleButton addTool(JPanel row, String key, String title) {
         JToggleButton button = new JToggleButton(title);
+        button.setMargin(new Insets(4, 8, 4, 8));
+        Dimension size = button.getPreferredSize();
+        button.setPreferredSize(new Dimension(size.width + 16, size.height));
         toolGroup.add(button);
         actions.put(key, button);
         row.add(button);
