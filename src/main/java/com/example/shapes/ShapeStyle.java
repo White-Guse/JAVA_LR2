@@ -8,7 +8,7 @@ public class ShapeStyle implements Serializable {
     private static final long serialVersionUID = 1L;
     private Color color;
     private int thickness = 3;
-    private boolean filled = true;
+    private boolean filled;
     private boolean shadow;
     private boolean volume;
     private String text = "";

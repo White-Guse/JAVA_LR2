@@ -13,19 +13,19 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.WeakHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShapeCanvas extends JPanel {
     private List<Shape> shapes = List.of();
     private List<Shape> selection = List.of();
     private Rectangle2D selectionArea;
-    private boolean grid = true;
-    private final WeakHashMap<ShapeStyle, BufferedImage> textures = new WeakHashMap<>();
+    private final Map<ShapeStyle, BufferedImage> textures = new HashMap<>();
 
-    // Создаёт рабочий лист с фиксированной системой координат.
+    // Создаёт белое поле для рисования.
     public ShapeCanvas() {
-        setBackground(new Color(253, 252, 247));
-        setPreferredSize(new Dimension(900, 650));
+        setBackground(Color.WHITE);
+        setPreferredSize(new Dimension(640, 460));
         setFocusable(true);
     }
 
@@ -33,14 +33,12 @@ public class ShapeCanvas extends JPanel {
     public void display(List<Shape> shapes, List<Shape> selection) {
         this.shapes = shapes;
         this.selection = selection;
+        textures.clear();
         repaint();
     }
 
     // Показывает рамку выделения мышью.
     public void setSelectionArea(Rectangle2D area) { selectionArea = area; repaint(); }
-
-    // Переключает отображение сетки.
-    public void toggleGrid() { grid = !grid; repaint(); }
 
     // Рисует лист, фигуры и рамки выделения.
     @Override
@@ -48,10 +46,9 @@ public class ShapeCanvas extends JPanel {
         super.paintComponent(g);
         Graphics2D graphics = (Graphics2D) g.create();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if (grid) drawGrid(graphics);
         for (Shape shape : shapes) drawShape(graphics, shape);
-        graphics.setColor(new Color(20, 114, 128));
-        graphics.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[]{5, 4}, 0));
+        graphics.setColor(Color.BLUE);
+        graphics.setStroke(new BasicStroke(1));
         for (Shape shape : selection) {
             if (!isDisplayed(shape, shapes)) continue;
             Rectangle2D bounds = shape.getBounds();
@@ -59,32 +56,9 @@ public class ShapeCanvas extends JPanel {
                     Math.max(1, bounds.getWidth()) + 10, Math.max(1, bounds.getHeight()) + 10));
         }
         if (selectionArea != null) {
-            graphics.setColor(new Color(20, 114, 128, 25));
-            graphics.fill(selectionArea);
-            graphics.setColor(new Color(20, 114, 128));
             graphics.draw(selectionArea);
         }
-        if (shapes.isEmpty()) {
-            graphics.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-            graphics.setColor(new Color(120, 130, 128));
-            graphics.drawString("Выберите фигуру сверху и щёлкните на листе", 70, 90);
-            graphics.drawString("Или возьмите карандаш и нарисуйте от руки", 70, 118);
-        }
         graphics.dispose();
-    }
-
-    // Рисует сетку тетради и отметки координат.
-    private void drawGrid(Graphics2D g) {
-        g.setStroke(new BasicStroke(1));
-        g.setColor(new Color(231, 234, 225));
-        for (int x = 0; x < getWidth(); x += 25) g.drawLine(x, 0, x, getHeight());
-        for (int y = 0; y < getHeight(); y += 25) g.drawLine(0, y, getWidth(), y);
-        g.setColor(new Color(205, 220, 212));
-        g.drawLine(50, 0, 50, getHeight());
-        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 10));
-        g.setColor(new Color(130, 145, 137));
-        for (int x = 100; x < getWidth(); x += 100) g.drawString(Integer.toString(x), x + 3, 14);
-        for (int y = 100; y < getHeight(); y += 100) g.drawString(Integer.toString(y), 5, y - 3);
     }
 
     // Рисует обычный объект или рекурсивно рисует группу.
