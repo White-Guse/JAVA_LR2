@@ -2,7 +2,6 @@ package com.example;
 
 import com.example.model.DrawingFile;
 import com.example.model.EditorModel;
-import com.example.model.ExampleDrawing;
 import com.example.model.ShapeType;
 import com.example.shapes.*;
 import com.example.view.ShapeCanvas;
@@ -139,7 +138,6 @@ public class EditorTest {
         assertSame(stroke, model.findAt(150, 100));
         ShapeCanvas canvas = new ShapeCanvas();
         canvas.setSize(300, 200);
-        canvas.toggleGrid();
         canvas.display(model.getShapes(), List.of());
         BufferedImage image = new BufferedImage(300, 200, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = image.createGraphics();
@@ -246,16 +244,17 @@ public class EditorTest {
         }
     }
 
-    // Проверяет отображение примера без зависимости от открытого окна.
+    // Проверяет отображение нескольких фигур без открытого окна.
     @Test
-    public void exampleCanBeRendered() {
+    public void drawingCanBeRendered() {
         ShapeCanvas canvas = new ShapeCanvas();
         canvas.setSize(900, 650);
-        canvas.display(ExampleDrawing.create(), List.of());
+        EditorModel model = twoShapes();
+        canvas.display(model.getShapes(), List.of());
         BufferedImage image = new BufferedImage(900, 650, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = image.createGraphics();
         canvas.paint(graphics);
         graphics.dispose();
-        assertNotEquals(image.getRGB(400, 600), image.getRGB(610, 300));
+        assertNotEquals(image.getRGB(400, 600), image.getRGB(150, 75));
     }
 }

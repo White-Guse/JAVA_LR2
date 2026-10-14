@@ -2,8 +2,6 @@ package com.example.controller;
 
 import com.example.model.DrawingFile;
 import com.example.model.EditorModel;
-import com.example.model.ExampleDrawing;
-import com.example.model.ShapeType;
 import com.example.shapes.PencilStroke;
 import com.example.shapes.Shape;
 import com.example.view.PropertiesPanel;
@@ -45,12 +43,10 @@ public class EditorController extends MouseAdapter {
         view.onAction("back", () -> perform(() -> model.changeLayer(false)));
         view.onAction("delete", () -> perform(model::deleteSelection));
         view.onAction("copyStyle", () -> perform(model::copyStyleToAll));
-        view.onAction("grid", view.getCanvas()::toggleGrid);
         view.onAction("color", this::chooseDrawingColor);
         view.onAction("save", this::save);
         view.onAction("open", this::open);
         view.onAction("new", this::newDrawing);
-        view.onAction("demo", this::showExample);
         view.onTreeSelected(selected -> {
             model.choose(null, false);
             for (Shape shape : selected) model.choose(shape, true);
@@ -141,7 +137,7 @@ public class EditorController extends MouseAdapter {
             model.updateSelected(panel.getObjectName(), bounds[0], bounds[1], bounds[2], bounds[3],
                     panel.getStyle(), panel.getVisibleValue(), panel.getFocusableValue());
             refresh();
-        } catch (IllegalArgumentException | java.text.ParseException error) {
+        } catch (IllegalArgumentException error) {
             view.showError("Проверьте значения свойств: " + error.getMessage());
         }
     }
@@ -225,14 +221,6 @@ public class EditorController extends MouseAdapter {
         if (!canDiscard()) return;
         model.clear();
         model.markSaved();
-        currentFile = null;
-        refresh();
-    }
-
-    // Загружает небольшой пример с группой и надписями.
-    private void showExample() {
-        if (!canDiscard()) return;
-        model.loadShapes(ExampleDrawing.create());
         currentFile = null;
         refresh();
     }

@@ -15,7 +15,7 @@ public class EditorModel {
     private final List<Shape> selection = new ArrayList<>();
     private ShapeType tool;
     private boolean pencil;
-    private Color drawingColor = new Color(34, 105, 115);
+    private Color drawingColor = Color.BLACK;
     private int pencilWidth = 3;
     private int nextNumber = 1;
     private boolean modified;
@@ -188,7 +188,9 @@ public class EditorModel {
         List<List<Shape>> owners = new ArrayList<>();
         for (Shape shape : selection) {
             List<Shape> owner = ownerOf(shape, shapes);
-            if (owners.stream().noneMatch(list -> list == owner)) owners.add(owner);
+            boolean found = false;
+            for (List<Shape> savedOwner : owners) if (savedOwner == owner) found = true;
+            if (!found) owners.add(owner);
         }
         for (List<Shape> owner : owners) {
             List<Shape> moved = new ArrayList<>();
@@ -260,8 +262,6 @@ public class EditorModel {
 
     // Формирует подсказку для текущего инструмента.
     public String getStatus() {
-        String hint = tool != null ? "Щёлкните на листе: " + tool.getTitle()
-                : pencil ? "Зажмите левую кнопку и рисуйте" : "Shift + щелчок: несколько объектов; пустое место: рамка";
-        return hint + "   |   Объектов: " + countShapes(shapes) + "   |   Выделено: " + selection.size();
+        return "Объектов: " + countShapes(shapes) + ". Выделено: " + selection.size();
     }
 }
